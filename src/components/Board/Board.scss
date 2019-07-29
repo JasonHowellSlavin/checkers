@@ -1,0 +1,15 @@
+.board {
+    width: 1000px;
+
+    .fourByFour {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        section {
+            display: flex;
+            flex-direction: row;
+        }
+    }
+}
