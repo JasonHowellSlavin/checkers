@@ -8,28 +8,50 @@ class Board extends Component {
         this.state = {
             message: 'Hello',
             isPieceSelected: false,
+            availableMoves: [],
             fourByFour: [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
             threeByThree: [
                 [
-                    {posY: 0, posX: 0, piece: true, selected: false, viable: false},
-                    {posY: 0, posX: 1, piece: false, selected: false, viable: false},
-                    {posY: 0, posX: 2, piece: false, selected: false, viable: false},
+                    {posY: 0, posX: 0, piece: true, selected: false},
+                    {posY: 0, posX: 1, piece: false, selected: false},
+                    {posY: 0, posX: 2, piece: false, selected: false},
+                    {posY: 0, posX: 3, piece: false, selected: false},
+                    {posY: 0, posX: 4, piece: false, selected: false},
                 ],
                 [
-                    {posY: 1, posX: 0, piece: false, selected: false, viable: false},
-                    {posY: 1, posX: 1, piece: false, selected: false, viable: false},
-                    {posY: 1, posX: 2, piece: false, selected: false, viable: false},
+                    {posY: 1, posX: 0, piece: false, selected: false},
+                    {posY: 1, posX: 1, piece: false, selected: false},
+                    {posY: 1, posX: 2, piece: false, selected: false},
+                    {posY: 1, posX: 3, piece: false, selected: false},
+                    {posY: 1, posX: 4, piece: false, selected: false},
                 ],
                 [
-                    {posY: 2, posX: 0, piece: false, selected: false, viable: false},
-                    {posY: 2, posX: 1, piece: false, selected: false, viable: false},
-                    {posY: 2, posX: 2, piece: false, selected: false, viable: false},
+                    {posY: 2, posX: 0, piece: false, selected: false},
+                    {posY: 2, posX: 1, piece: false, selected: false},
+                    {posY: 2, posX: 2, piece: false, selected: false},
+                    {posY: 2, posX: 3, piece: false, selected: false},
+                    {posY: 2, posX: 4, piece: false, selected: false},
+                ],
+                [
+                    {posY: 3, posX: 0, piece: false, selected: false},
+                    {posY: 3, posX: 1, piece: false, selected: false},
+                    {posY: 3, posX: 2, piece: false, selected: false},
+                    {posY: 3, posX: 3, piece: false, selected: false},
+                    {posY: 3, posX: 4, piece: false, selected: false},
+                ],
+                [
+                    {posY: 4, posX: 0, piece: false, selected: false},
+                    {posY: 4, posX: 1, piece: false, selected: false},
+                    {posY: 4, posX: 2, piece: false, selected: false},
+                    {posY: 4, posX: 3, piece: false, selected: false},
+                    {posY: 4, posX: 4, piece: false, selected: false},
                 ]
             ]
         }
         this.addPiece = this.addPiece.bind(this);
         this.selectPiece = this.selectPiece.bind(this);
         this.removeAttribute = this.removeAttribute.bind(this);
+        this.checkForPositionsToMove = this.checkForPositionsToMove.bind(this);
     }
 
     removeAttribute(attribute) {
@@ -49,35 +71,53 @@ class Board extends Component {
 
         this.removeAttribute('selected');
 
+        let availableMoves = this.checkForPositionsToMove(pY, pX);
+
         currentBoard[pY][pX].selected = true;
 
-        this.setState({threeByThree: currentBoard, isPieceSelected: true});
+        this.setState({threeByThree: currentBoard, isPieceSelected: true, availableMoves: availableMoves});
     }
 
     addPiece(pX, pY) {
         let currentBoard = this.state.threeByThree.slice();
-
-        console.log(currentBoard[pY][pX].selected);
+        let currentAvaialableMoves = this.state.availableMoves.slice();
 
         if (!this.state.isPieceSelected) {
+            return;
+        }
+
+        let selectedSpot = [pY, pX];
+        console.log(selectedSpot, this.state.availableMoves);
+
+        let canMove = currentAvaialableMoves.filter((arr) => {
+            return arr[0] === selectedSpot[0] && arr[1] === selectedSpot[1];
+        })
+
+        if (canMove.length === 0) {
             return;
         }
 
         this.removeAttribute('piece');
         this.removeAttribute('selected');
 
+
         currentBoard[pY][pX].piece = true;
         this.setState({threeByThree: currentBoard, isPieceSelected: false});
     }
 
     checkForPositionsToMove(pY, pX) {
-        let currentBoard = this.state.threeByThree;
-        let avaialableSpaces = [];
 
-        let moveUp = currentBoard[pY - 1] !== undefined ? currentBoard[pY - 1] : false;
-        let moveDown = currentBoard[pY + 1] !== undefined ? currentBoard[pY + 1] : false;
-        let moveWest = currentBoard[pY - 1] !== undefined ? currentBoard[pY - 1] : false;
+        // Finsihing programming what the available spaces are
+        let currentBoard = this.state.threeByThree.slice();
 
+        let moveUp = currentBoard[pY - 1] !== undefined ? (pY - 1) : -1;
+        let moveDown = currentBoard[pY + 1] !== undefined ? (pY + 1) : -1;
+        let moveWest = currentBoard[pX - 1] !== undefined ? (pX - 1) : -1;
+        let moveEast = currentBoard[pX + 1] !== undefined ? (pX + 1) : -1;
+
+        let allSpaces = [[moveUp, moveEast], [moveUp, moveWest], [moveDown, moveEast], [moveDown, moveWest]];
+
+        return allSpaces.filter((arr) => arr.every(pos => pos >= 0 ));
     }
 
     componentDidMount() {

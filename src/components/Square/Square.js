@@ -20,8 +20,8 @@ class Square extends Component {
         return (
             <div onClick={() => this.props.addPiece(this.props.pX, this.props.pY)}
                 className={`square ${this.props.className} ${selectedClassName}`}>
-                {this.props.pX}
                 {this.props.pY}
+                {this.props.pX}
                 {this.props.piece && <Piece selectPiece={this.props.selectPiece} pX={this.props.pX} pY={this.props.pY}/>}
             </div>
         )
